@@ -1,0 +1,254 @@
+import tensorflow as tf
+
+x=tf.constant([[5.,5.,6.],[6.,9.,2.]])
+print(x)
+print(x.shape)
+print(x.dtype)
+
+x+x
+
+15*x
+
+tf.concat([x,x,x],axis=0)#row axis 0
+
+tf.reduce_sum(x)
+
+tf.convert_to_tensor([1,2,3])
+
+tf.reduce_sum([1,2,3])
+
+if tf.config.list_physical_devices('GPU'):
+  print("Tensorflow **IS** using the gpu")
+else:
+  print("**is not**")
+
+var=tf.Variable([0.0,0.0,0.0])
+
+var.assign_add([2,3,4])
+
+x=tf.Variable(1.0)
+def f(x):
+  y=x**2+2*x-5
+  return y
+
+f(x)
+
+with tf.GradientTape()as tape:
+  y=f(x)
+g_x=tape.gradient(y,x)#g(x)=dy/dx
+g_x
+
+class MyModule(tf.Module):
+  def __init__ (self,value):
+    self.weight=tf.Variable(value)
+  @tf.function
+  def multiply(self,x):
+    return x*self.weight
+
+mod=MyModule(3)
+mod.multiply(tf.constant([1,2,3]))
+
+save_path='./saved'
+tf.saved_model.save(mod,save_path)
+
+reloaded=tf.saved_model.load(save_path)
+reloaded.multiply(tf.constant([1,2,3]))
+
+# prompt: import matplotlib
+import matplotlib  as plt
+import numpy as np
+
+%matplotlib inline
+
+def plot(func,yaxis=(-1.6,1.6)):
+  plt.ylin
+  plot(binary_step,yaxis=(-1.6,1.6))
+  plot (binary_step,yaxis=(-1.6,1,6))
+
+# **ANN**
+
+import numpy as np
+def sigmoid(x):
+  #activation func
+  return 1/(1+np.exp(-x))
+#feedforward NN
+class Neuron:
+  def __init__(self,weight,bias):
+    self.weight=weight
+    self.bias=bias
+  def feedforward(self,inputs):
+    #total wn*xn+bias
+    total=np.dot(self.weight,inputs)+self.bias
+    return sigmoid(total)
+weight=np.array([0,1])
+bias=4
+n=Neuron(weight,bias)
+x=np.array([2,3])#inputs
+print(n.feedforward(x))
+#0.9990889488055994
+
+import numpy as np
+class ourneural:
+  """
+  a neural network with:
+  2 input
+  2 hidden layer
+  an output
+  """
+  def __init__ (self):
+    weight=np.array([0,1])
+    bias=0
+    #the neuron is from previous
+    self.h1=Neuron(weight,bias)
+    self.h2=Neuron(weight,bias)
+    self.o1=Neuron(weight,bias) #output
+  def feedforward(self,x):
+    outh1=self.h1.feedforward(x)
+    outh2=self.h2.feedforward(x)
+
+    outo1=self.o1.feedforward(np.array([outh1,outh2]))
+    return outo1
+network=ourneural()
+x=np.array([2,3])#input
+print(network.feedforward(x))#0.7216325609518421
+
+
+
+
+
+# **MSE mean square error**
+
+import numpy as np
+#for error correction we move from out to in
+def mse(ytrue,ypred):
+  return ((ytrue-ypred)**2).mean()
+ytrue=np.array([1,0,0,1])
+ypred=np.array([0,0,0,0])
+print(mse(ytrue,ypred))#0.5
+
+MODEL TO FIND WHETHER MALE OR FEMALE
+
+import numpy as np
+
+def sigmoid(x):
+  return 1/(1+np.exp(-x))
+def derivsig(x):
+  #derivation of sigmoid:f'(x)=f(x)*(1-f(x))
+  fx=sigmoid(x)
+  return fx*(1-fx)
+#loss
+def mse(ytrue,ypred):
+  return ((ytrue-ypred)**2).mean()
+class ourneuron:
+  """
+  a neural network with:
+  2 input
+  2 hidden layer
+  an output
+  """
+  def __init__(self):
+    #weights
+    self.w1=np.random.normal()
+    self.w2=np.random.normal()
+    self.w3=np.random.normal()
+    self.w4=np.random.normal()
+    self.w5=np.random.normal()
+    self.w6=np.random.normal()
+    #bias
+    self.b1=np.random.normal()
+    self.b3=np.random.normal()
+    self.b4=np.random.normal()
+    self.b5=np.random.normal()
+    self.b2=np.random.normal()
+    self.b6=np.random.normal()
+
+  def feedforward(self,x):
+    #x is a numpy array with 2 element
+    h1=sigmoid(self.w1*x[0]+self.w2*x[1]+self.b1)
+    h2=sigmoid(self.w3*x[0]+self.w4*x[1]+self.b2)
+    o1=sigmoid(self.w5*x[0]+self.w6*x[1]+self.b3)
+    return o1
+  def train(self,data,all_ytrue):
+    ''' data is a (n x 2)numpy array ,n=#of samples in dataset
+    all ytrue is a numpy array with n elements'''
+    learnrate=0.1
+    epochs=1000 #how many of times program is running through entire dataset
+    for epochs in range(epochs):
+      for x,ytrue in zip(data,all_ytrue):
+        #do feedforward need values later
+        sumh1=self.w1*x[0]+self.w2*x[1]+self.b1
+        h1=sigmoid(sumh1)
+
+        sumh2=self.w3*x[0]+self.w4*x[1]+self.b2
+        h2=sigmoid(sumh2)
+
+        sumo1=self.w5*x[0]+self.w6*x[1]+self.b3
+        o1=sigmoid(sumo1)
+
+        ypred=o1
+        #calculate partial derivatives
+        #naming dld_w1 represent partial L(loss)/partial w1
+        dld_ypred=-2*(ytrue-ypred)
+
+        #neuron o1 #output neuron
+        d_ypred_d_w5=h1*derivsig(sumo1)
+        d_ypred_d_w6=h2*derivsig(sumo1)
+        d_ypred_d_b3=derivsig(sumo1)
+
+            # Neuron h1
+        d_h1_d_w1 = x[0] * deriv_sigmoid(sum_h1)
+        d_h1_d_w2 = x[1] * deriv_sigmoid(sum_h1)
+        d_h1_d_b1 = deriv_sigmoid(sum_h1)
+
+        # Neuron h2
+        d_h2_d_w3 = x[0] * deriv_sigmoid(sum_h2)
+        d_h2_d_w4 = x[1] * deriv_sigmoid(sum_h2)
+        d_h2_d_b2 = deriv_sigmoid(sum_h2)
+
+        # --- Update weights and biases
+        # Neuron h1     #-= combind assignment operator w(updated)= w(old)-(learning rate* partial derivative)
+        self.w1 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_w1
+        self.w2 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_w2
+        self.b1 -= learn_rate * d_L_d_ypred * d_ypred_d_h1 * d_h1_d_b1
+
+        # Neuron h2
+        self.w3 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_w3
+        self.w4 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_w4
+        self.b2 -= learn_rate * d_L_d_ypred * d_ypred_d_h2 * d_h2_d_b2
+
+        # Neuron o1
+        self.w5 -= learn_rate * d_L_d_ypred * d_ypred_d_w5
+        self.w6 -= learn_rate * d_L_d_ypred * d_ypred_d_w6
+        self.b3 -= learn_rate * d_L_d_ypred * d_ypred_d_b3
+
+      # --- Calculate total loss at the end of each epoch
+      if epoch % 10 == 0:
+        y_preds = np.apply_along_axis(self.feedforward, 1, data)
+        loss = mse_loss(all_y_trues, y_preds)
+        print("Epoch %d loss: %.3f" % (epoch, loss))   #%d: for integer value
+
+# Define dataset
+data = np.array([
+  [-2, -1],  # Alice
+  [25, 6],   # Bob
+  [17, 4],   # Charlie
+  [-15, -6], # Diana
+])
+all_y_trues = np.array([
+  1, # Alice
+  0, # Bob
+  0, # Charlie
+  1, # Diana
+])
+
+# Train our neural network!
+network = OurNeuralNetwork()
+network.train(data, all_y_trues)
+
+
+
+
+
+
+
+
